@@ -1,0 +1,8 @@
+{
+    "mysql": {
+        "user": "root",
+        "password": "123456",
+        "host": 8889,
+        "database": "shop"
+    }
+}
