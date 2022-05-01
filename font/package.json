@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Ant Design and icejs scaffold, use TypeScript.",
   "dependencies": {
+    "@alifd/next": "^1.25.30",
     "@ant-design/icons": "^4.0.2",
     "@ant-design/pro-layout": "^6.5.1",
     "antd": "^4.0.0",
@@ -27,6 +28,7 @@
   },
   "scripts": {
     "start": "icejs start",
+    "dev": "icejs start",
     "build": "icejs build",
     "lint": "npm run eslint && npm run stylelint",
     "eslint": "eslint --cache --ext .js,.jsx ./",

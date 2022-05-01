@@ -11,6 +11,7 @@ import { verifyAuthorization } from './middlewares/authorization';
 import jwtconf from './config/jwt';
 import index from './routes/index';
 import users from './routes/users';
+import cors from 'koa2-cors';
 
 // error handler
 // onerror(app);
@@ -21,6 +22,9 @@ app.use(bodyparser({
 }));
 app.use(json());
 app.use(logger());
+app.use(cors({
+    origin: '*'
+}));
 app.use(require('koa-static')(__dirname + '/public'));
 app.use(customizeResponseBody());
 
@@ -29,17 +33,15 @@ app.use(async (ctx: ParameterizedContext, next: Next) => {
     const start: any = new Date();
     await next();
     const current: any = new Date();
-    const ms = current - start; 
-    console.log(ctx.header);
-    console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
+    const ms = current - start;
 });
 // 这个错误处理必须放在 koajwt 前面，否则 koajwt 无效
 app.use(verifyAuthorization());
 app.use(
     koajwt({ secret: jwtconf.secret })
-    .unless({
-        path: [/\/users\/login/]
-    })
+        .unless({
+            path: [/\/users\/(login|register)/]
+        })
 );
 
 // routes

@@ -151,6 +151,13 @@
     "@types/koa" "*"
     "@types/koa-send" "*"
 
+"@types/koa2-cors@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.npmmirror.com/@types/koa2-cors/-/koa2-cors-2.0.2.tgz#a348fc2a0e227fe60909effaf43396898742e8fc"
+  integrity sha512-S7D//zbF0oJJJ7l6eFT2ThXPCjxHOv84HKMKiZPmVu51Bf4GWZGbTZDedIoUo/aXEIwTnfKbSiod/vqidfDwjg==
+  dependencies:
+    "@types/koa" "*"
+
 "@types/koa@*", "@types/koa@^2.11.6":
   version "2.13.4"
   resolved "https://registry.npmmirror.com/@types/koa/-/koa-2.13.4.tgz#10620b3f24a8027ef5cbae88b393d1b31205726b"
@@ -1390,6 +1397,11 @@ koa-convert@^2.0.0:
     co "^4.6.0"
     koa-compose "^4.1.0"
 
+koa-cors@^0.0.16:
+  version "0.0.16"
+  resolved "https://registry.npmmirror.com/koa-cors/-/koa-cors-0.0.16.tgz#98107993a7909e34c042986c5ec6156d77f3432e"
+  integrity sha512-s15knPxe3AJBi2I/ZMPL0pSqU+PLYLO6k5tI0AqClkzavowvocPlSdFUwaHNqtjHMhsGmiq2tiX/25iILJx9YA==
+
 koa-is-json@1:
   version "1.0.0"
   resolved "https://registry.npmmirror.com/koa-is-json/-/koa-is-json-1.0.0.tgz#273c07edcdcb8df6a2c1ab7d59ee76491451ec14"
@@ -1463,6 +1475,11 @@ koa-unless@^1.0.7:
   version "1.0.7"
   resolved "https://registry.npmmirror.com/koa-unless/-/koa-unless-1.0.7.tgz#b9df375e2b4da3043918d48622520c2c0b79f032"
   integrity sha512-NKiz+nk4KxSJFskiJMuJvxeA41Lcnx3d8Zy+8QETgifm4ab4aOeGD3RgR6bIz0FGNWwo3Fz0DtnK77mEIqHWxA==
+
+koa2-cors@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.npmmirror.com/koa2-cors/-/koa2-cors-2.0.6.tgz#9ad23df3a0b9bb84530b46f5944f3fb576086554"
+  integrity sha512-JRCcSM4lamM+8kvKGDKlesYk2ASrmSTczDtGUnIadqMgnHU4Ct5Gw7Bxt3w3m6d6dy3WN0PU4oMP43HbddDEWg==
 
 koa@^2.7.0:
   version "2.13.4"

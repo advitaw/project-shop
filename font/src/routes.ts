@@ -5,28 +5,19 @@ import Login from './pages/login';
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
 const Home = lazy(() => import('@/pages/Home'));
 const NotFound = lazy(() => import('@/components/NotFound'));
+const Profile = lazy(() => import('@/pages/Profile'));
 
 const routerConfig: IRouterConfig[] = [
+  { path: '/login', exact: true, component: Login },
   {
     path: '/',
     component: Layout,
-    exact: true,
-    children: [{
-      path: '/dashboard',
-      component: Dashboard,
-    }, {
-      path: '/',
-      exact: true,
-      component: Home,
-    },
-    {
-      component: NotFound,
-    }],
-  },
-  {
-    path: '/login',
-    exact: true,
-    component: Login,
+    children: [
+      { path: '/dashboard', component: Dashboard, exact: true },
+      { path: '/', exact: true, component: Home },
+      { path: '/profile', component: Profile, exact: true },
+      { component: NotFound },
+    ],
   },
 ];
 

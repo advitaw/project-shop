@@ -1,0 +1,15 @@
+{
+    "page": {
+        "stockManagement": {
+            "label": "库存管理",
+            "subMenu": [
+                {
+                    "label": "进货",
+                    "path": "/stockIn"
+                }
+            ]
+        }
+    },
+    "role": ["common", "accountant"],
+    "hideComponents": ["downloadStockIn"]
+}
