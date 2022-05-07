@@ -66,11 +66,12 @@ router.post("/register", async (ctx: ParameterizedContext, next: Next) => {
   if (!haveSame) {
     const result = await User.create({
       ...params,
-      role: "common",
+      role: "3",
     });
     console.log("result", result);
     const token = await getToken({ id: "token" });
-    ctx.body = ctx.formatResponseBody(0, token, params);
+    const list = await getPageList(result.role);
+    ctx.body = ctx.formatResponseBody(0, token, { ...result, list });
     return;
   } else {
     ctx.body = ctx.formatResponseBody(-1);

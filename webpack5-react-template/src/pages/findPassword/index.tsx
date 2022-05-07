@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { userInfo, globalPageList } from "@/store";
 const { Item } = Form;
-const Register = () => {
+const FindPassword = () => {
     const [, setUser] = useRecoilState(userInfo);
     const [, setList] = useRecoilState(globalPageList);
     const history = useHistory();
@@ -39,7 +39,7 @@ const Register = () => {
         <div className="flex justify-center h-[100vh] items-center bg-gradient-to-b from-sky-500 to-indigo-500">
             <div className="w-[600px] border-[1px] border-slate-500 rounded-lg bg-white flex flex-col">
                 <div className="text-[40px] text-center mt-[50px] border-b-[1px] mb-[20px]">
-                    注册
+                    找回密码
                 </div>
                 <Form
                     onFinish={handleFinish}
@@ -60,27 +60,27 @@ const Register = () => {
                         <Input placeholder="请输入账号" />
                     </Item>
                     <Item
-                        label="密码"
+                        label="新的密码"
                         name="password"
                         rules={[
                             {
                                 type: "string",
                                 required: true,
-                                message: "请输入密码！",
+                                message: "请输入新的密码！",
                             },
                         ]}
                     >
-                        <Input.Password placeholder="请输入密码" />
+                        <Input.Password placeholder="请输入新的密码" />
                     </Item>
                     <Item
                         name="confirm"
-                        label="确认密码"
+                        label="确认新的密码"
                         dependencies={["password"]}
                         hasFeedback
                         rules={[
                             {
                                 required: true,
-                                message: "请确认密码",
+                                message: "请确认新的密码",
                             },
                             ({ getFieldValue }) => ({
                                 validator(_, value) {
@@ -98,19 +98,6 @@ const Register = () => {
                         ]}
                     >
                         <Input.Password placeholder="确认你的密码" />
-                    </Item>
-                    <Item
-                        label="值班时间"
-                        name="workTime"
-                        rules={[
-                            {
-                                type: "string",
-                                required: true,
-                                message: "请输入值班时间！",
-                            },
-                        ]}
-                    >
-                        <Input placeholder="请输入值班时间" />
                     </Item>
                     <Item
                         label="手机号"
@@ -138,35 +125,9 @@ const Register = () => {
                     >
                         <Input placeholder="请输入邮箱" />
                     </Item>
-                    <Item
-                        label="昵称"
-                        name="nickName"
-                        rules={[
-                            {
-                                type: "string",
-                                required: true,
-                                message: "请输入昵称！",
-                            },
-                        ]}
-                    >
-                        <Input placeholder="请输入昵称" />
-                    </Item>
-                    <Item
-                        label="负责店面"
-                        name="shopName"
-                        rules={[
-                            {
-                                type: "string",
-                                required: true,
-                                message: "请输入负责店面！",
-                            },
-                        ]}
-                    >
-                        <Input placeholder="请输入负责店面" />
-                    </Item>
                     <Item wrapperCol={{ offset: 8, span: 8 }}>
-                        <Button className="w-[200px]" htmlType="submit">
-                            注册
+                        <Button type="primary" className="w-[200px]" htmlType="submit">
+                            提交
                         </Button>
                     </Item>
                 </Form>
@@ -174,6 +135,6 @@ const Register = () => {
         </div>
     );
 };
-export default Register;
+export default FindPassword;
 /*
  */

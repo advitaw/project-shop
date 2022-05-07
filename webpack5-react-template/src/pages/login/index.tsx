@@ -2,11 +2,12 @@ import React, { useEffect } from "react";
 import { Input, Button, Form, message } from "antd";
 import { login } from "@/request/axios";
 import { useRecoilState } from "recoil";
-import { userInfo } from "@/store";
+import { userInfo, globalPageList } from "@/store";
 import { asideMenuConfig } from "@/BasicLayout/menuConfig";
 const { Item } = Form;
 const Login = (props) => {
     const [, setUser] = useRecoilState(userInfo);
+    const [, setList] = useRecoilState(globalPageList);
     const handleFinish = async (value) => {
         const { name, password } = value;
         const res = await login(name, password);
@@ -15,8 +16,16 @@ const Login = (props) => {
             case 0:
                 localStorage.setItem("token", res?.data?.data);
                 setUser(res?.data?.extra?.dataValues);
-                localStorage.setItem("usr", JSON.stringify(res?.data?.extra?.dataValues));
-                props.history.push("/");
+                setList(res?.data?.extra?.list);
+                localStorage.setItem(
+                    "usr",
+                    JSON.stringify(res?.data?.extra?.dataValues)
+                );
+                localStorage.setItem(
+                    "list",
+                    JSON.stringify(res?.data?.extra?.list)
+                );
+                props.history.push("/dashboard");
                 break;
             case 100:
                 message.error("用户名已存在");
@@ -30,12 +39,12 @@ const Login = (props) => {
         }
     };
     useEffect(() => {
-        const tmp = []
-        asideMenuConfig.forEach((item)=>{
-            if(item.routes) {
-                item.routes.forEach(route => tmp.push(route.path))
+        const tmp = [];
+        asideMenuConfig.forEach((item) => {
+            if (item.routes) {
+                item.routes.forEach((route) => tmp.push(route.path));
             }
-        })
+        });
         console.warn(tmp.toString());
     }, []);
     return (

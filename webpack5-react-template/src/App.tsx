@@ -8,6 +8,7 @@ import { useRecoilState } from "recoil";
 import { globalPageList } from "@/store/index";
 import BasicLayout from "@/BasicLayout";
 import Login from "./pages/login";
+import FindPassword from "./pages/findPassword";
 import Register from "./pages/register";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
             <Switch>
                 <Route path="/login" exact component={Login} />
                 <Route path="/register" exact component={Register} />
+                <Route path="/find-password" exact component={FindPassword} />
                 <BasicLayout location={window.location}>
                     <Switch>
                         {publicRoutes.map(({ path, component, ...route }) => (

@@ -79,11 +79,11 @@ const asideMenuConfig: IMenu[] = [
         icon: "div",
         routes: [
             {
-                name: "角色管理",
+                name: "新增会员",
                 path: "/vip/add",
             },
             {
-                name: "用户管理",
+                name: "会员信息统计",
                 path: "/vip/sta",
             },
         ],
@@ -100,10 +100,6 @@ const asideMenuConfig: IMenu[] = [
             {
                 name: "用户管理",
                 path: "/sysManagement/user",
-            },
-            {
-                name: "权限管理",
-                path: "/sysManagement/access",
             },
             {
                 name: "个人设置",
