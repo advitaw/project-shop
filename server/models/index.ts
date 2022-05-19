@@ -1,6 +1,3 @@
-/**
- * Created by huangfushan on 2019-08-22 14:34
- */
 const Sequelize = require('sequelize');
 
 console.log('run')

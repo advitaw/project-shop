@@ -1,32 +1,20 @@
 {
-  "compileOnSave": false,
-  "buildOnSave": false,
-  "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "build",
-    "module": "esnext",
-    "target": "es6",
-    "jsx": "react-jsx",
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "lib": ["es6", "dom"],
-    "sourceMap": true,
-    "allowJs": true,
-    "rootDir": "./",
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noImplicitAny": false,
-    "importHelpers": true,
-    "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": true,
-    "skipLibCheck": true,
-    "paths": {
-      "@/*": ["./src/*"],
-      "ice": [".ice"]
-    }
-  },
-  "include": ["src", ".ice"],
-  "exclude": ["node_modules", "build", "public"]
+    "compilerOptions": {
+        "baseUrl": ".",
+        "rootDir": "./",
+        "paths": {
+            "@/*": ["./src/*"],
+        },
+        "outDir": "dist",
+        "module": "esnext",
+        "target": "esnext",
+        "lib": ["es6", "dom"],
+        "sourceMap": true,
+        "jsx": "preserve",
+        "moduleResolution": "node",
+        "strict": false,
+        "allowSyntheticDefaultImports": true,
+    },
+    "include": ["./src/**/*", "./typings/**/*"],
+    "exclude": ["node_modules", "dist", "build"]
 }

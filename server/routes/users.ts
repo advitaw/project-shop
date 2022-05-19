@@ -3,6 +3,8 @@ import { Next, ParameterizedContext } from "koa";
 import { getToken } from "../utils/token";
 import User from "../models/db/user";
 import Role from "../models/db/role";
+import Sequelize from "../models";
+import { Op } from "sequelize";
 
 const router: Router<any, {}> = new Router();
 const getPageList = async (roles: string) => {
@@ -24,12 +26,39 @@ const getPageList = async (roles: string) => {
   console.log("tmp", tmp);
   return [...new Set(tmp)];
 };
+
 router.prefix("/users");
 
-router.get("/", async (ctx: ParameterizedContext, next: Next) => {
+router.post("/", async (ctx: ParameterizedContext, next: Next) => {
   console.log(ctx.request.body);
-  let user = await User.findAll();
-  ctx.body = ctx.formatResponseBody(0, user);
+  const { name } = ctx.request.body;
+  let users;
+  console.log('shaixuan````````````', name);
+  if (name) {
+    users = await User.findAll({
+      where: {
+        name: {
+          [Op.startsWith]: name,
+        }
+      }
+    });
+  } else {
+    users = await User.findAll();
+  }
+  console.log('``````````````````', users);
+  for (let user of users) {
+    const tmp: any[] = []
+    console.log('ssd', user.role);
+    const roleArr = user.role.split(',');
+    console.log('roleArr', roleArr);
+    for (let item of roleArr) {
+      const role = await Role.findOne({ where: { id: item } })
+      console.log(role, 'role');
+      tmp.push(role)
+    }
+    user.role = tmp;
+  }
+  ctx.body = ctx.formatResponseBody(0, users);
 });
 
 router.post("/login", async (ctx: ParameterizedContext, next: Next) => {
@@ -91,5 +120,41 @@ router.get("/changePassword", async (ctx: ParameterizedContext, next: Next) => {
   console.log("result", result);
   ctx.body = ctx.formatResponseBody(0);
 });
+
+router.post('/delete', async (ctx: ParameterizedContext) => {
+  const { id } = ctx.request.body;
+  await User.destroy({
+    where: {
+      id
+    }
+  })
+  ctx.body = ctx.formatResponseBody(0);
+})
+
+router.post('/update', async (ctx: ParameterizedContext) => {
+  const { id, role } = ctx.request.body;
+  await User.update({ role }, {
+    where: {
+      id
+    }
+  })
+  ctx.body = ctx.formatResponseBody(0);
+})
+
+
+router.post('/updateInfo', async (ctx: ParameterizedContext) => {
+  const { id, nickName, phone, email, shopName, workTime } = ctx.request.body;
+  await User.update({ nickName, phone, email, shopName, workTime }, {
+    where: {
+      id
+    }
+  })
+  const user = await User.findAll({
+    where: {
+      id
+    }
+  })
+  ctx.body = ctx.formatResponseBody(0, user);
+})
 
 export default router;

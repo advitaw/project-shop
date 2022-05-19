@@ -11,6 +11,8 @@ import { verifyAuthorization } from './middlewares/authorization';
 import jwtconf from './config/jwt';
 import index from './routes/index';
 import users from './routes/users';
+import roles from './routes/role';
+import vip from './routes/vip'
 import cors from 'koa2-cors';
 
 // error handler
@@ -47,6 +49,8 @@ app.use(
 // routes
 app.use(index.routes()).use(index.allowedMethods());
 app.use(users.routes()).use(users.allowedMethods());
+app.use(roles.routes()).use(roles.allowedMethods());
+app.use(vip.routes()).use(vip.allowedMethods());
 
 // error-handling
 app.on('error', (err, ctx) => {

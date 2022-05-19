@@ -1,58 +1,45 @@
-## Antd Design & icejs scaffold
+### 命令
 
-## 使用
+本地开发：
+npm run dev:test  npm run dev:prod
 
-```bash
-# 安装依赖
-$ npm install
+部署：
+npm run build:test npm run build:test
 
-# 启动服务
-$ npm start  # visit http://localhost:3333
+
+### eslint使用
+
+vscode软件安装 ESLint软件即可
+
+### 获取页面元素，自动打开vscode并自动打开相对应组件的文件
+
+```
+  press hotkey (ctrl⌃ + shift⇧ + commmand⌘ + c), then click the HTML element you wish to inspect.
+
+  使用文档：https://www.npmjs.com/package/react-dev-inspector
 ```
 
-[More docs](https://ice.work/docs/guide/about).
+### 目录说明
+```
 
-## 目录
+| assets
+| components
+| hooks
+| pages 页面
+    | detail
+        | components 详情页面公共组件
+        detailA
+          | components 组件
+          | index.tsx 页面
+        detailB
+          | components 组件
+          | index.tsx 页面
+    | home
+        | components 组件
+        | index.tsx 页面
+    | test test页面
 
-```md
-├── build/                         # 构建产物
-├── mock/                          # 本地模拟数据
-│   ├── index.[j,t]s
-├── public/
-│   ├── index.html                 # 应用入口 HTML
-│   └── favicon.png                # Favicon
-├── src/                           # 源码路径
-│   ├── components/                # 自定义业务组件
-│   │   └── Guide/
-│   │       ├── index.[j,t]sx
-│   │       ├── index.module.scss
-│   ├── layouts/                   # 布局组件
-│   │   └── BasicLayout/
-│   │       ├── index.[j,t]sx
-│   │       └── index.module.scss
-│   ├── pages/                     # 页面
-│   │   └── Home/                  # home 页面，约定路由转成小写
-│   │       ├── components/        # 页面级自定义业务组件
-│   │       ├── models.[j,t]sx     # 页面级数据状态
-│   │       ├── index.[j,t]sx      # 页面入口
-│   │       └── index.module.scss  # 页面样式文件
-│   ├── configs/                   # [可选] 配置文件
-│   │   └── menu.[j,t]s            # [可选] 菜单配置
-│   ├── models/                    # [可选] 应用级数据状态
-│   │   └── user.[j,t]s
-│   ├── utils/                     # [可选] 工具库
-│   ├── global.scss                # 全局样式
-│   ├── routes.[j,t]s              # 路由配置
-│   └── app.[j,t]s[x]              # 应用入口脚本
-├── build.json                     # 工程配置
-├── README.md
-├── package.json
-├── .editorconfig
-├── .eslintignore
-├── .eslintrc.[j,t]s
-├── .gitignore
-├── .stylelintignore
-├── .stylelintrc.[j,t]s
-├── .gitignore
-└── [j,t]sconfig.json
+| router 路由
+| store 状态管理
+
 ```

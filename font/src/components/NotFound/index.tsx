@@ -1,4 +1,5 @@
-import { Link } from 'ice';
+import React from "react";
+import { Link } from 'react-router-dom';
 
 export interface Props {
   name: string;
