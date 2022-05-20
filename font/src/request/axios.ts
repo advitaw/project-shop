@@ -146,22 +146,22 @@ export const getVipList = (name?) => {
     });
 };
 
-export const addVip = (name, sex, phone, score) => {
+export const addVip = (name, sex, phone, score, age) => {
     return instance({
         url: "vip/add",
         method: "post",
         data: {
-            name, sex, phone, score
+            name, sex, phone, score, age
         }
     });
 }
 
-export const updateVip = (id, name, sex, phone, score) => {
+export const updateVip = (id, name, sex, phone, score, age) => {
     return instance({
         url: "vip/update",
         method: "post",
         data: {
-            id, name, sex, phone, score
+            id, name, sex, phone, score, age
         }
     });
 }

@@ -13,7 +13,12 @@ import index from './routes/index';
 import users from './routes/users';
 import roles from './routes/role';
 import vip from './routes/vip'
+import good from './routes/goods'
 import cors from 'koa2-cors';
+import activity from './routes/activity';
+import supplier from './routes/supplier';
+import rule from './routes/rule'
+import order from './routes/order'
 
 // error handler
 // onerror(app);
@@ -51,7 +56,11 @@ app.use(index.routes()).use(index.allowedMethods());
 app.use(users.routes()).use(users.allowedMethods());
 app.use(roles.routes()).use(roles.allowedMethods());
 app.use(vip.routes()).use(vip.allowedMethods());
-
+app.use(good.routes()).use(good.allowedMethods());
+app.use(supplier.routes()).use(supplier.allowedMethods());
+app.use(activity.routes()).use(activity.allowedMethods());
+app.use(rule.routes()).use(rule.allowedMethods());
+app.use(order.routes()).use(order.allowedMethods());
 // error-handling
 app.on('error', (err, ctx) => {
     console.error('server error', err, ctx);

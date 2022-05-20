@@ -25,14 +25,14 @@ export default function VipAdd() {
     fetchData();
   }
   const update = async () => {
-    const { id, name, sex, phone, score } = form.getFieldsValue();
-    await updateVip(id, name, sex, phone, score)
+    const { id, name, sex, phone, score, age } = form.getFieldsValue();
+    await updateVip(id, name, sex, phone, score, age)
     setShowModal(false);
     fetchData();
   }
   const add = async () => {
-    const { name, sex, phone, score } = form.getFieldsValue();
-    await addVip(name, sex, phone, score)
+    const { name, sex, phone, score, age } = form.getFieldsValue();
+    await addVip(name, sex, phone, score, age)
     setShowModal(false);
     fetchData();
   }

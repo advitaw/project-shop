@@ -1,40 +1,38 @@
-import Vip from "../models/db/vip";
+import activity from "../models/db/activity";
 import Router from "koa-router";
 import { ParameterizedContext } from "koa";
 import { Op } from "sequelize";
+import rule from "../models/db/rule";
 
 const router: Router<any, {}> = new Router();
-router.prefix("/vip");
+router.prefix("/activity");
 
 router.post('/', async (ctx: ParameterizedContext) => {
+    rule.hasOne(activity, { foreignKey: 'rule_id', sourceKey: 'id' })
+    activity.belongsTo(rule, { foreignKey: 'rule_id', targetKey: 'id' })
     const { name } = ctx.request.body;
-    let vips;
-    if (name) {
-        vips = await Vip.findAll({
-            where: {
-                name: {
-                    [Op.substring]: name,
-                }
-            }
-        });
-    } else {
-        vips = await Vip.findAll();
-    }
-    ctx.body = ctx.formatResponseBody(0, vips);
+    const acts = await activity.findAll({
+        where: {
+            name: {
+                [Op.substring]: name || ''
+            },
+        },
+        include: rule
+    })
+    ctx.body = ctx.formatResponseBody(0, acts);
 })
 
 router.post('/add', async (ctx: ParameterizedContext) => {
     try {
-        const { name, sex, phone, score, age } = ctx.request.body;
-        console.log('新增vip', name, sex, phone, score)
-        const haveSame = await Vip.findOne({ where: { name } });
+        const { name, creator, rule, startTime, endTime } = ctx.request.body;
+        const haveSame = await activity.findOne({ where: { name } });
         if (haveSame) {
             ctx.body = ctx.formatResponseBody(100);
             return;
         }
         if (!haveSame) {
-            await Vip.create({
-                name, sex, phone, score, age
+            await activity.create({
+                name, creator, rule, startTime, endTime
             });
             ctx.body = ctx.formatResponseBody(0);
             return;
@@ -46,7 +44,7 @@ router.post('/add', async (ctx: ParameterizedContext) => {
 
 router.post('/delete', async (ctx: ParameterizedContext) => {
     const { id } = ctx.request.body;
-    await Vip.destroy({
+    await activity.destroy({
         where: {
             id
         }
@@ -55,12 +53,14 @@ router.post('/delete', async (ctx: ParameterizedContext) => {
 
 })
 router.post('/update', async (ctx: ParameterizedContext) => {
-    const { id, name, sex, phone, score, age } = ctx.request.body;
-    await Vip.update({ name, sex, phone, score, age }, {
+    const { id, name, creator, rule, startTime, endTime } = ctx.request.body;
+    await activity.update({ name, creator, rule, startTime, endTime }, {
         where: {
             id
         }
     })
     ctx.body = ctx.formatResponseBody(0);
 })
+
+
 export default router;
