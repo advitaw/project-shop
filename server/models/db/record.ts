@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 import sequelize from '../index';
 
-const order = sequelize.define('order', {
+const record = sequelize.define('record', {
     // 在这里定义模型属性
     id: {
         type: DataTypes.NUMBER,
@@ -9,27 +9,15 @@ const order = sequelize.define('order', {
         primaryKey: true,
         autoIncrement: true
     },
-    amount: {
+    date: {
         type: DataTypes.STRING
         // allowNull 默认为 true
     },
-    list: {
-        type: DataTypes.STRING
-    },
-    activity_id: {
-        type: DataTypes.STRING
-    },
-    date: {
+    num: {
         type: DataTypes.NUMBER
     },
-    type_id: {
-        type: DataTypes.NUMBER
-    },
-    supplier_id: {
-        type: DataTypes.NUMBER
-    },
-    vip_id: {
+    costing: {
         type: DataTypes.NUMBER
     },
 });
-export default order;
+export default record;

@@ -19,6 +19,7 @@ import activity from './routes/activity';
 import supplier from './routes/supplier';
 import rule from './routes/rule'
 import order from './routes/order'
+import dash from './routes/dash'
 
 // error handler
 // onerror(app);
@@ -61,6 +62,7 @@ app.use(supplier.routes()).use(supplier.allowedMethods());
 app.use(activity.routes()).use(activity.allowedMethods());
 app.use(rule.routes()).use(rule.allowedMethods());
 app.use(order.routes()).use(order.allowedMethods());
+app.use(dash.routes()).use(dash.allowedMethods());
 // error-handling
 app.on('error', (err, ctx) => {
     console.error('server error', err, ctx);

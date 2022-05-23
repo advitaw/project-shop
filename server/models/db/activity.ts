@@ -25,5 +25,8 @@ const activity = sequelize.define('activity', {
     endTime: {
         type: DataTypes.NUMBER
     },
+    list: {
+        type: DataTypes.STRING
+    }
 });
 export default activity;

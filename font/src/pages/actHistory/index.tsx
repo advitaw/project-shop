@@ -6,53 +6,64 @@ import ProForm, {
     ProFormSelect,
     QueryFilter,
 } from "@ant-design/pro-form";
-import { act } from "@/mock/act";
-import { actRule } from "@/mock/act";
 import dayjs from 'dayjs';
-const columns = [
-    {
-        title: "活动名称",
-        dataIndex: "name",
-        key: "name",
-        render: (text) => <a>{text}</a>,
-    },
-    {
-        title: "活动创建人",
-        dataIndex: "creator",
-        key: "age",
-    },
-    {
-        title: "活动规则",
-        dataIndex: "rule",
-        key: "address",
-        render: (text) => <div>{actRule.find(i => i.id===text).name}</div>
-    },
-    {
-        title: "开始时间",
-        dataIndex: "startTime",
-        key: "score",
-        render: (text) => <a>{dayjs(text).format('YYYY:MM:DD HH:mm:ss')}</a>,
-    },
-    {
-        title: "结束时间",
-        dataIndex: "endTime",
-        key: "phone",
-        render: (text) => <a>{dayjs(text).format('YYYY:MM:DD HH:mm:ss')}</a>,
-    },
-    {
-        title: "操作",
-        key: "action",
-        render: () => (
-            <Space size="middle">
-                <Button >查看</Button>
-                <Button danger>删除</Button>
-            </Space>
-        ),
-    },
-];
+import { deleteActivity, getAct } from "@/request/axios";
 
 export default function ActHistory() {
-    const [list,setList] = useState(act);
+    const [list, setList] = useState();
+    const fetchData = async (name?) => {
+        const res = await getAct(name)
+        setList(res.data.data)
+        console.log(res.data.data)
+    }
+    const handleDelete = async (id) => {
+        console.log(id)
+        await deleteActivity(id)
+        fetchData()
+    }
+    useEffect(() => {
+        fetchData()
+    }, [])
+    const columns = [
+        {
+            title: "活动名称",
+            dataIndex: "name",
+            key: "name",
+            render: (text) => <a>{text}</a>,
+        },
+        {
+            title: "活动创建人",
+            dataIndex: "creator",
+            key: "age",
+        },
+        {
+            title: "活动规则",
+            dataIndex: "rule",
+            key: "address",
+            render: (text) => <div>{text.name}</div>
+        },
+        {
+            title: "开始时间",
+            dataIndex: "startTime",
+            key: "score",
+            render: (text) => <a>{dayjs(text).format('YYYY:MM:DD HH:mm:ss')}</a>,
+        },
+        {
+            title: "结束时间",
+            dataIndex: "endTime",
+            key: "phone",
+            render: (text) => <a>{dayjs(text).format('YYYY:MM:DD HH:mm:ss')}</a>,
+        },
+        {
+            title: "操作",
+            key: "action",
+            render: (text, record) => (
+                <Space size="middle">
+                    <Button danger onClick={() => { handleDelete(text.id) }}>删除</Button>
+                </Space>
+            ),
+        },
+    ];
     return (
         <div>
             <h2>历史活动管理</h2>
@@ -60,7 +71,7 @@ export default function ActHistory() {
                 name: string;
             }>
                 onFinish={async (values) => {
-                    console.log(values.name);
+                    fetchData(values.name);
                 }}
                 className="mb-[24px]"
             >

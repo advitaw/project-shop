@@ -25,6 +25,10 @@ const Login = (props) => {
                     "list",
                     JSON.stringify(res?.data?.extra?.list)
                 );
+                localStorage.setItem(
+                    "com",
+                    JSON.stringify(res?.data?.extra?.tmp)
+                );
                 props.history.push("/dashboard");
                 break;
             case 100:
@@ -85,7 +89,7 @@ const Login = (props) => {
                     >
                         <Input.Password placeholder="请输入密码" />
                     </Item>
-                    <div className="w-[80px] text-gray-500 absolute right-[60px] top-[95px]">
+                    <div className="w-[80px] text-gray-500 absolute right-[60px] top-[95px]" onClick={() => { props.history.push('find-password') }}>
                         忘记密码？
                     </div>
                     <Item wrapperCol={{ offset: 8, span: 8 }}>

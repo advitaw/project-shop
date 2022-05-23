@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "@/components/card";
 import {
     ShoppingOutlined,
@@ -6,22 +6,15 @@ import {
     UserOutlined,
 } from "@ant-design/icons"; import { Chart } from '@antv/g2';
 import { Table } from "antd";
-const render = () => {
-    const data = [
-        { item: '水饮', count: 40, percent: 0.4 },
-        { item: '零食', count: 21, percent: 0.21 },
-        { item: '烟酒', count: 17, percent: 0.17 },
-        { item: '防疫', count: 13, percent: 0.13 },
-        { item: '生活用品', count: 9, percent: 0.09 },
-    ];
-
+import { getDash, getRecord, getRule } from "@/request/axios";
+const render = (data) => {
     const chart = new Chart({
         container: 'c2',
         autoFit: true,
         height: 600,
         width: 600
     });
-
+    console.log(data);
     chart.data(data);
 
     chart.coordinate('theta', {
@@ -30,7 +23,7 @@ const render = () => {
 
     chart.scale('percent', {
         formatter: (val) => {
-            val = val * 100 + '%';
+            val = (val * 100).toFixed(1) + '%';
             return val;
         },
     });
@@ -54,7 +47,7 @@ const render = () => {
             },
         })
         .tooltip('item*percent', (item, percent) => {
-            percent = percent * 100 + '%';
+            percent = (percent * 100).toFixed(1) + '%';
             return {
                 name: item,
                 value: percent,
@@ -71,42 +64,10 @@ const render = () => {
     interval.elements[0].setState('selected', true);
 
 }
-const list = [
-    {
-        name: '可乐',
-        sales: 5000,
-        price: 3
-    },
-    {
-        name: '雪碧',
-        sales: 4000,
-        price: 3
-    },
-    {
-        name: '薯片',
-        sales: 3000,
-        price: 5
-    },
-    {
-        name: '餐巾纸',
-        sales: 2500,
-        price: 1
-    },
-    {
-        name: '口罩',
-        sales: 2000,
-        price: 10
-    },
-    {
-        name: '消毒纸巾',
-        sales: 1000,
-        price: 3
-    }
-]
 const columns = [
     {
         title: "商品名称",
-        dataIndex: "name",
+        dataIndex: "title",
         key: "name",
         render: (text) => <a>{text}</a>,
     },
@@ -122,105 +83,71 @@ const columns = [
     },
 ];
 export default function Dashboard() {
+    const [data, setData] = useState({});
+    const [record, setR] = useState([]);
+    const fetchDash = async () => {
+        const res = await getDash()
+        const r = await getRecord()
+        setData(res.data?.data)
+        setR(r.data.data)
+    }
     useEffect(() => {
-        const chart = new Chart({
-            container: 'c1',
-            width: 600,
-            height: 600,
-        });
-        const lineData = [
-            {
-                "date": "2021-05",
-                "profit": 4000,
-                "num": 12000
-            }, {
-                "date": "2021-06",
-                "profit": 4500,
-                "num": 13000
-            }, {
-                "date": "2021-07",
-                "profit": 4000,
-                "num": 14000
-            }, {
-                "date": "2021-08",
-                "profit": 3000,
-                "num": 10000
-            }, {
-                "date": "2021-09",
-                "profit": 3000,
-                "num": 8000
-            },
-            {
-                "date": "2021-10",
-                "profit": 2500,
-                "num": 7000
-            }, {
-                "date": "2021-11",
-                "profit": 3000,
-                "num": 9000
-            }, {
-                "date": "2021-12",
-                "profit": 2500,
-                "num": 11000
-            }, {
-                "date": "2022-01",
-                "profit": 3000,
-                "num": 12000
-            }, {
-                "date": "2022-02",
-                "profit": 3000,
-                "num": 14000
-            },
-            {
-                "date": "2022-03",
-                "profit": 3500,
-                "num": 15000
-            }, {
-                "date": "2022-04",
-                "profit": 3500,
-                "num": 13000
-            }, {
-                "date": "2022-05",
-                "profit": 4000,
-                "num": 13000
-            }
-        ]
-        chart.data(lineData);
-        chart.scale({
-            profit: {
-                min: 0,
-                max: 10000
-            },
-            num: {
-                min: 0,
-                max: 20000
-            }
-        });
-        chart.line().position('date*profit').label('利润').color('#1890ff');
-        chart.line().position('date*num').label('流水').color('#2fc25b');
-        chart.render();
-        render()
+        fetchDash()
     }, [])
+    useEffect(() => {
+        console.log(record)
+        if (record.length > 0) {
+            const chart = new Chart({
+                container: 'c1',
+                width: 600,
+                height: 600,
+            });
+            chart.data(record);
+            chart.scale({
+                profit: {
+                    min: 0,
+                    max: 10000
+                },
+                num: {
+                    min: 0,
+                    max: 20000
+                }
+            });
+            chart.line().position('date*profit').label('利润').color('#1890ff');
+            chart.line().position('date*num').label('流水').color('#2fc25b');
+            chart.render();
+        }
+    }, [record])
+    useEffect(() => {
+        const tmp = []
+        const d = data?.cateData;
+        if (d) {
+            Object.keys(d).map(i => {
+                tmp.push({ item: i, count: d[i], percent: (d[i] / data.total) })
+            })
+            render(tmp)
+        }
+    }, [data])
     return (
         <div>
             <div className="flex flex-row w-[100%] mb-[48px]">
                 <Card
                     title="商品总数"
-                    num={42}
+                    num={data?.goodNum}
                     color="bg-gradient-to-r from-cyan-500 to-blue-500"
                 >
                     <ShoppingOutlined style={{ fontSize: "48px" }} />
                 </Card>
                 <Card
                     title="销售总额"
-                    num={210000}
+                    num={data?.total}
                     color={"bg-gradient-to-r from-indigo-500 to-gray-500"}
                 >
                     <MoneyCollectOutlined style={{ fontSize: "48px" }} />
                 </Card>
                 <Card
                     title="会员总数"
-                    num={400}
+                    num={data?.vipNum}
                     color={"bg-gradient-to-r from-teal-600 to-gray-500"}
                 >
                     <UserOutlined style={{ fontSize: "48px" }} />
@@ -239,7 +166,7 @@ export default function Dashboard() {
                 </div>
             </div>
             <h2>销售榜单</h2>
-            <Table columns={columns} dataSource={list} />;
+            <Table columns={columns} dataSource={data?.top} />;
         </div>
     );
 }

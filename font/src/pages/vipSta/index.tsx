@@ -1,11 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Chart } from '@antv/g2'
-const renderSex = () => {
-  const data = [
-    { item: '男', count: 172, percent: 0.43 },
-    { item: '女', count: 228, percent: 0.57 },
-  ];
-
+import { vipSta } from "@/request/axios";
+const renderSex = (data) => {
   const chart = new Chart({
     container: 'c2',
     autoFit: true,
@@ -62,15 +58,7 @@ const renderSex = () => {
   interval.elements[0].setState('selected', true);
 
 }
-const renderAge = () => {
-  const data = [
-    { type: '18-24 岁', value: 96, percent: 0.24 },
-    { type: '25-29 岁', value: 96, percent: 0.24 },
-    { type: '30-39 岁', value: 112, percent: 0.28 },
-    { type: '40-49 岁', value: 56, percent: 0.14 },
-    { type: '50 岁以上', value: 24, percent: 0.06 },
-  ];
-
+const renderAge = (data) => {
   const chart = new Chart({
     container: 'c1',
     autoFit: true,
@@ -194,11 +182,27 @@ const renderLine = () => {
 
 }
 export default function VipSta() {
+  const [data, setData] = useState({})
+  const fetchData = async () => {
+    const res = await vipSta();
+    setData(res.data?.data)
+  }
   useEffect(() => {
-    renderAge();
-    renderLine();
-    renderSex();
-  }, []);
+    fetchData();
+  }, [])
+  useEffect(() => {
+    if (data?.sexMap) {
+      const sex = [{ item: '男', count: data?.sexMap[1], percent: data?.sexMap[1] / data?.total }, { item: '女', count: data?.sexMap[0], percent: data?.sexMap[0] / data?.total }]
+      const age = []
+      Object.keys(data?.ageMap).map((i) => {
+        age.push({ type: i, value: data?.ageMap[i], percent: data?.ageMap[i] / data?.total })
+      })
+      console.log(sex, age)
+      renderAge(age);
+      renderLine();
+      renderSex(sex);
+    }
+  }, [data]);
   return (
     <div>
       <h2>会员信息统计页面</h2>

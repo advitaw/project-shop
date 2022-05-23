@@ -1,6 +1,6 @@
 import React from "react";
 import { Input, Button, Form, message } from "antd";
-import { register } from "@/request/axios";
+import { changePassword, register } from "@/request/axios";
 import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { userInfo, globalPageList } from "@/store";
@@ -10,30 +10,10 @@ const FindPassword = () => {
     const [, setList] = useRecoilState(globalPageList);
     const history = useHistory();
     const handleFinish = async (value) => {
-        const res = await register(value);
-        console.log(res);
-        switch (res?.data?.code) {
-            case 0:
-                localStorage.setItem("token", res?.data?.data);
-                setUser(res?.data?.extra?.dataValues);
-                setList(res?.data?.extra?.list);
-                localStorage.setItem(
-                    "usr",
-                    JSON.stringify(res?.data?.extra?.dataValues)
-                );
-                localStorage.setItem(
-                    "list",
-                    JSON.stringify(res?.data?.extra?.list)
-                );
-                history.push("/");
-                break;
-            case 100:
-                message.error("用户名已存在");
-                break;
-            case -1:
-                message.error("系统错误");
-                break;
-        }
+        console.log(value);
+        await changePassword(value.name, value.password)
+        message.success('修改成功')
+        history.push('login')
     };
     return (
         <div className="flex justify-center h-[100vh] items-center bg-gradient-to-b from-sky-500 to-indigo-500">

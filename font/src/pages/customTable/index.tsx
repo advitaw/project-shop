@@ -9,20 +9,60 @@ import { vips } from "@/mock";
 import { goods } from "@/mock/goods";
 import { act } from "@/mock/act";
 import { order } from "@/mock/oreder";
-
+import { getOrder, getAct, getGoodsList, getSupplier, getVipList, deleteOrder } from "@/request/axios";
+import Auth from "@/components/Auth";
 const { Item, useForm } = Form;
-
 export default function CustomTable() {
     const actionRef = useRef<ActionType>();
     const [form] = useForm();
-    const [modalVisible, setModalVisible] = useState<boolean>();
-    const [list, setList] = useState(order);
+    const [maps, setMaps] = useState({});
     const handleFormFinish = (values) => {
         console.log(values)
-        order.push({ ...values, id: 7 });
-        setList([...order]);
-        setModalVisible(false);
     }
+    const getMap = (arr) => {
+        const tmp = {}
+        arr.forEach((i) => {
+            tmp[i.id] = i.name || i.title
+        })
+        return tmp
+    }
+    const fetchMap = async () => {
+        const res = await Promise.all([getAct(), getGoodsList(), getSupplier(), getVipList()])
+        console.log(res);
+        setMaps({
+            act: getMap(res[0].data.data),
+            good: getMap(res[1].data.data),
+            sup: getMap(res[2].data.data),
+            vip: getMap(res[3].data.data)
+        })
+    }
+    const fetchData = async (params, sort, filter) => {
+        console.log('p', params, sort, filter);
+        const { activity, amount, current, date, type, vip, pageSize } = params;
+        console.log('ts', activity, amount, current, date, type, vip, pageSize)
+        const res = await getOrder(date, type, undefined, amount, activity, vip, current, pageSize)
+        return {
+            success: true,
+            data: res.data.data,
+            total: res.data.extra
+        }
+    }
+    const goodAdapter = (text) => {
+        const goods = text.split(',');
+        const res = [];
+        goods.map(i => {
+            const info = i.split('*');
+            res.push(`${maps?.good[info[0]]}${info[1]}件`);
+        })
+        return res;
+    }
+    useEffect(() => {
+        fetchMap()
+    }, [])
+
+    useEffect(() => {
+        console.log(maps);
+    }, [maps])
     const columns: ProColumns<any>[] = [
         {
             dataIndex: "index",
@@ -36,7 +76,7 @@ export default function CustomTable() {
             render: (text: string, item) => {
                 return (
                     <div>
-                        {dayjs(item.date).format('YYYY年MM月DD日 HH:mm:ss')}
+                        {text}
                     </div>
                 )
             }
@@ -44,7 +84,12 @@ export default function CustomTable() {
         {
             title: "订单类型",
             dataIndex: "type",
-            render: (text) => { return <div>{text === 0 ? '卖货' : '进货'}</div> }
+            valueType: 'select',
+            valueEnum: {
+                0: '出货',
+                1: '卖货'
+            },
+            render: (text, record) => { return <div>{record?.type_id == 1 ? '卖货' : '进货'}</div> }
         },
         {
             title: "金额",
@@ -53,68 +98,52 @@ export default function CustomTable() {
         },
         {
             title: "商品",
-            dataIndex: "goods",
-            render: (text: number) => { return <div>{goods[text]?.title}</div> }
-        },
-        {
-            title: "数量",
-            dataIndex: "num",
-            render: (text) => { return <div>{text}个</div> }
+            hideInSearch: true,
+            dataIndex: "list",
+            render: (text: string) => { return <div>{goodAdapter(text).map(i => <span>{i} </span>)}</div> }
         },
         {
             title: "活动",
             dataIndex: "activity",
-            render: (text: number) => { console.log(act); console.log(text); return <div>{act[text]?.name}</div> }
+            valueType: 'select',
+            valueEnum: maps?.act,
+            render: (text, record) => { return <div>{record?.activity?.name}</div> }
         },
         {
             title: "供应商",
+            hideInSearch: true,
             dataIndex: "supplier",
-            render: (text: number) => { return <div>{suppliers[text]?.name}</div> }
+            valueType: 'select',
+            valueEnum: maps?.sup,
+            render: (text, record) => { return <div>{record?.supplier?.name}</div> }
         },
         {
             title: "会员",
             dataIndex: "vip",
-            render: (text: number) => { return <div>{vips[text]?.name}</div> }
+            valueType: 'select',
+            valueEnum: maps?.vip,
+            render: (text, record) => { return <div>{record?.vip?.name}</div> }
         },
         {
             title: "操作",
             valueType: "option",
             key: "option",
             render: (text, record, _, action) => [
-                <a
-                    key="editable"
-                    onClick={() => {
-                        console.log("编辑");
-                    }}
-                >
-                    编辑
-                </a>,
-                <a
+                <Auth id={'customTable-delete'}> <a
                     key="view"
                     onClick={() => {
-                        console.log(record);
-                        suppliers.splice(suppliers.indexOf(record), 1);
-                        setList([...order]);
+                        deleteOrder(record.id)
+
                     }}
                 >
                     删除
-                </a>,
+                </a></Auth>
             ],
         },
     ];
     const handleFilter = (v) => {
         console.warn(v)
-        if(v.date) {
-           const tmp = order.filter((item)=>{
-               return dayjs(item.date).isSame(v.date,'day');
-           })
-           setList(tmp);
-        }
     }
-    useEffect(() => {
-        console.log('change', list);
-        actionRef.current.reload();
-    }, [list]);
     return (
         <div>
             <h2>自定义报表</h2>
@@ -122,7 +151,7 @@ export default function CustomTable() {
                 columns={columns}
                 actionRef={actionRef}
                 onSubmit={handleFilter}
-                dataSource={list}
+                request={fetchData}
                 cardBordered
                 editable={{
                     type: "multiple",
@@ -156,29 +185,6 @@ export default function CustomTable() {
                 dateFormatter="string"
                 headerTitle="订单"
             />
-            <Modal visible={modalVisible} footer={[
-                <Button onClick={() => setModalVisible(false)}>取消</Button>,
-                <Button type="primary" onClick={form.submit}>确定</Button>
-            ]
-            }>
-                <Form form={form} onFinish={handleFormFinish}>
-                    <Item name="name" label="姓名">
-                        <Input />
-                    </Item>
-                    <Item name="address" label="地址">
-                        <Input />
-                    </Item>
-                    <Item name="linkman" label="联系人姓名">
-                        <Input />
-                    </Item>
-                    <Item name="phone" label="电话">
-                        <Input />
-                    </Item>
-                    <Item name="type" label="供货类型">
-                        <Input />
-                    </Item>
-                </Form>
-            </Modal>
         </div>
     );
 }

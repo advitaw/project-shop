@@ -276,17 +276,10 @@ export const listMap = {
     "/sysManagement/user": '用户管理',
 }
 export const componentsMap = {
-    'customTable-edit': '修改订单',
     'customTable-delete': '删除订单', 
-    'stockIn-add': '进货',
     'stockIn-delete': '删除进货记录',
-    'stockOut-add': '出货',
     'stockOut-delete': '删除出货记录',
-    'stockList-add': '增加商品',
-    'stockList-delete': '删除商品',
-    'stockList-edit': '修改商品',
     'listManagement-delete': '删除订单',
     'history-delete': '删除活动',
-    'vip-add': '新增vip',
     'vip-delete': '删除vip',
 }

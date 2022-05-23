@@ -1,6 +1,5 @@
 const { merge } = require('webpack-merge');
 
-// pc端还是移动端配置
 module.exports = ({ WEBPACK_SERVE, MK_ENV }) => {
     console.log('环境变量', WEBPACK_SERVE, MK_ENV);
     const NODE_ENV = WEBPACK_SERVE ? 'development' : 'production';

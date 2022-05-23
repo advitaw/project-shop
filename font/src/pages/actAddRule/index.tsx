@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Space, Select, Card, message } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { actRule } from '@/mock/act';
+import { addRule, getRule } from '@/request/axios';
 const { Option } = Select;
 const { Item } = Form;
 const areas = [
@@ -12,15 +13,35 @@ const areas = [
 const discountWord = ['减', '打', '赠送']
 const actAddRule = () => {
   const [form] = Form.useForm();
+  const [rules, setRules] = useState([]);
 
-  const onFinish = values => {
+  const onFinish = async (values) => {
     console.log('Received values of form:', values);
+    const { name, rule, limits } = values;
+    const limit = []
+    const dec = []
+    limits.forEach((item) => {
+      limit.push(item.limit)
+      dec.push(item.price)
+    })
+    await addRule(name, limit.toString(), dec.toString(), rule)
+    fetchData()
   };
-
+  const fetchData = async () => {
+    const res = await getRule()
+    const list = res.data.data;
+    list.forEach((item) => {
+      item.limit = item.limit.split(',')
+      item.dec = item.dec.split(',')
+    })
+    setRules(res.data.data)
+  }
   const handleChange = () => {
     form.setFieldsValue({ limits: [] });
   };
-
+  useEffect(() => {
+    fetchData()
+  }, [])
   return (
     <div>
       <h2>新增活动规则
@@ -78,30 +99,31 @@ const actAddRule = () => {
           )}
         </Form.List>
         <Item>
-          <Button type="primary" htmlType="submit" onClick={()=>{message.success({content:'创建成功！'})}}>
+          <Button type="primary" htmlType="submit" onClick={() => { message.success({ content: '创建成功！' }) }}>
             创建
           </Button>
         </Item>
       </Form>
-      <h2>历史活动详情  </h2>
+      <h2>历史规则详情</h2>
       <div>
         {
-          actRule.map((item) => {
-            if (item.id !== 3)
-              return (
-                <Card
-                  hoverable
-                  className="bg-gray m-[48px] rounded-[12px]"
-                  title={<h2>{item.name}</h2>}
-                >
-                  {
-                    item.desc.map((i) => {
-                      return <div>{i}</div>
-                    })
-                  }
-                </Card>
-              )
-          })
+          rules?.length > 0 ? rules.map((item) => {
+            console.log(item)
+            return (
+              <Card
+                key={item.id}
+                hoverable
+                className="bg-gray m-[48px] rounded-[12px]"
+                title={<h2>{item?.name}</h2>}
+              >
+                {
+                  item.limit.map((i, index) => {
+                    return <div>满{i}{discountWord[item.type]}{item.dec[index]}{item.type === 1 ? '折' : ''}</div>
+                  })
+                }
+              </Card>
+            )
+          }) : null
         }
       </div>
     </div>

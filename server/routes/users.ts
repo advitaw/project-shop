@@ -79,7 +79,13 @@ router.post("/login", async (ctx: ParameterizedContext, next: Next) => {
   const token = await getToken({ id: "token" });
   const list = await getPageList(project.role);
   console.log("list", list);
-  ctx.body = ctx.formatResponseBody(0, token, { ...project, list });
+  const tmp = []
+  for (let item of project.role.split(',')) {
+    const role = await Role.findOne({ where: { id: item } })
+    console.log(role, 'role');
+    tmp.push(role)
+  }
+  ctx.body = ctx.formatResponseBody(0, token, { ...project, list, tmp });
 });
 
 router.post("/register", async (ctx: ParameterizedContext, next: Next) => {
@@ -107,12 +113,12 @@ router.post("/register", async (ctx: ParameterizedContext, next: Next) => {
   }
 });
 
-router.get("/changePassword", async (ctx: ParameterizedContext, next: Next) => {
+router.post("/changePassword", async (ctx: ParameterizedContext, next: Next) => {
   console.log(ctx.request.body);
   const body = ctx.request.body;
-  const { name, password } = body;
+  const { name, newPassword } = body;
   const result = await User.update(
-    { password },
+    { password: newPassword },
     {
       where: { name },
     }

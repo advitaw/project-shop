@@ -5,47 +5,78 @@ import ProForm, {
     ProFormText,
     ProFormSelect,
     QueryFilter,
+    ProFormDatePicker
 } from "@ant-design/pro-form";
-import { order } from "@/mock/oreder";
-import { suppliers } from "@/mock";
-import { goods } from "@/mock/goods";
-import dayjs from 'dayjs';
-const columns = [
-    {
-        title: "供货商名称",
-        dataIndex: "supplier",
-        key: "supplier",
-        render: (text) => <div>{suppliers[text].name}</div>,
-    },
-    {
-        title: "商品名",
-        dataIndex: "goods",
-        key: "goods",
-        render: (text) => <div>{goods[text].title}</div>,
-    },
-    {
-        title: "数量",
-        dataIndex: "num",
-        key: "num",
-    },
-    {
-        title: "日期",
-        dataIndex: "date",
-        key: "name",
-        render: (text) => <a>{dayjs(text).format('YYYY:MM:DD HH:mm:ss')}</a>,
-    },
-    {
-        title: "操作",
-        key: "action",
-        render: () => (
-            <Space size="middle">
-                <Button danger>删除</Button>
-            </Space>
-        ),
-    },
-];
+import { getOrder, getAct, getGoodsList, getSupplier, getVipList, deleteOrder } from "@/request/axios";
+
 export default function OrderList() {
-    const [list,setList] = useState(order);
+    const [list, setList] = useState([]);
+    const [maps, setMaps] = useState({});
+    const getMap = (arr) => {
+        const tmp = {}
+        arr.forEach((i) => {
+            tmp[i.id] = i.name || i.title
+        })
+        return tmp
+    }
+
+    const goodAdapter = (text) => {
+        const goods = text.split(',');
+        const res = [];
+        goods.map(i => {
+            const info = i.split('*');
+            res.push(`${maps?.good[info[0]]}${info[1]}件`);
+        })
+        return res;
+    }
+    const fetchMap = async () => {
+        const res = await Promise.all([getGoodsList(), getSupplier()])
+        console.log(res);
+        setMaps({
+            good: getMap(res[0].data.data),
+            sup: getMap(res[1].data.data),
+        })
+    }
+    const fetchData = async (date?, sup?) => {
+        const res = await getOrder(date, 0, sup)
+        setList(res.data.data)
+    }
+    useEffect(() => {
+        fetchData();
+        fetchMap();
+    }, [])
+    const columns = [
+        {
+            title: "供货商名称",
+            dataIndex: "supplier",
+            key: "supplier",
+            render: (text) => <div>{text.name}</div>,
+        },
+        {
+            title: "商品",
+            dataIndex: "list",
+            key: "goods",
+            render: (text) => <div>{goodAdapter(text).map(i => <span>{i} </span>)}</div>,
+        },
+        {
+            title: "日期",
+            dataIndex: "date",
+            key: "name",
+            render: (text) => <a>{text}</a>,
+        },
+        {
+            title: "操作",
+            key: "action",
+            render: (text, record) => (
+                <Space size="middle">
+                    <Button danger onClick={async () => {
+                        await deleteOrder(record.id)
+                        fetchData()
+                    }}>删除</Button>
+                </Space>
+            ),
+        },
+    ];
     return (
         <div>
             <h2>供货商订单管理</h2>
@@ -54,24 +85,17 @@ export default function OrderList() {
                 date: string;
             }>
                 onFinish={async (values) => {
-                    console.log(values.name);
-                    if(values.name) {
-                        const tmp = order.filter((item)=>{
-                            return suppliers[item.supplier].name.indexOf(values.name) !== -1
-                        })
-                        setList(tmp);
-                    }
-                    else {
-                        setList(order);
-                    }
+                    console.log(values);
+                    fetchData(values.date, values.name)
                 }}
                 className="mb-[24px]"
             >
-                <ProFormText
+                <ProFormSelect
                     name="name"
                     label="供货商名称"
+                    valueEnum={maps?.sup}
                 />
-                <ProFormSelect name="date" label="日期" />
+                <ProFormDatePicker name="date" label="日期" />
             </QueryFilter>
             <Table columns={columns} dataSource={list} />;
         </div>

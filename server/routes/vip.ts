@@ -63,4 +63,23 @@ router.post('/update', async (ctx: ParameterizedContext) => {
     })
     ctx.body = ctx.formatResponseBody(0);
 })
+
+router.get('/sta', async (ctx: ParameterizedContext) => {
+    const list = await Vip.findAll()
+    const sexMap = { 0: 0, 1: 0 }
+    const ageMap = { '18-24': 0, '25-35': 0, '35-45': 0, '45以上': 0 }
+    list.forEach((i: any) => {
+        sexMap[i.sex] += 1
+        if (i.age < 24) {
+            ageMap['18-24'] += 1
+        } else if (i.age < 35) {
+            ageMap['25-35'] += 1
+        } else if (i.age < 45) {
+            ageMap['35-45'] += 1
+        } else {
+            ageMap['45以上'] += 1
+        }
+    })
+    ctx.body = ctx.formatResponseBody(0, { sexMap, ageMap, total: list.length });
+})
 export default router;

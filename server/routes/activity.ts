@@ -24,7 +24,7 @@ router.post('/', async (ctx: ParameterizedContext) => {
 
 router.post('/add', async (ctx: ParameterizedContext) => {
     try {
-        const { name, creator, rule, startTime, endTime } = ctx.request.body;
+        const { name, creator, rule, startTime, endTime, list } = ctx.request.body;
         const haveSame = await activity.findOne({ where: { name } });
         if (haveSame) {
             ctx.body = ctx.formatResponseBody(100);
@@ -32,7 +32,7 @@ router.post('/add', async (ctx: ParameterizedContext) => {
         }
         if (!haveSame) {
             await activity.create({
-                name, creator, rule, startTime, endTime
+                name, creator, rule_id: rule, startTime, endTime, list
             });
             ctx.body = ctx.formatResponseBody(0);
             return;

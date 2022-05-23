@@ -5,14 +5,14 @@ import { ParameterizedContext } from "koa";
 const router: Router<any, {}> = new Router();
 router.prefix("/rule");
 
-router.post('/', async (ctx: ParameterizedContext) => {
+router.get('/', async (ctx: ParameterizedContext) => {
     const rules = await rule.findAll();
     ctx.body = ctx.formatResponseBody(0, rules);
 })
 
 router.post('/add', async (ctx: ParameterizedContext) => {
     try {
-        const { name, limit, desc, type } = ctx.request.body;
+        const { name, limit, dec, type } = ctx.request.body;
         const haveSame = await rule.findOne({ where: { name } });
         if (haveSame) {
             ctx.body = ctx.formatResponseBody(100);
@@ -20,7 +20,7 @@ router.post('/add', async (ctx: ParameterizedContext) => {
         }
         if (!haveSame) {
             await rule.create({
-                name, limit, desc, type
+                name, limit, dec, type
             });
             ctx.body = ctx.formatResponseBody(0);
             return;

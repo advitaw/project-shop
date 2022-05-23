@@ -11,15 +11,12 @@ export const instance = axios.create({
 });
 instance.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
-    console.log('cfg', config);
     config.headers.authorization = `Bearer ${token}`
     return config;
 })
 instance.interceptors.response.use((res) => {
-    console.log(res);
     return res
 }, (err) => {
-    console.log(err.response)
     if (err?.response && err?.response?.status === 401) {
         window.location.pathname = '/login';
     }
@@ -35,7 +32,6 @@ export interface IRegister {
     shopName: string;
 }
 export const login = (name: string, password: string) => {
-    console.log(name, password);
     return instance({
         url: "users/login",
         method: "post",
@@ -173,5 +169,222 @@ export const deleteVip = (id) => {
         data: {
             id
         }
+    });
+}
+
+
+export const getGoodsList = (title?, sup?, cat?) => {
+    return instance({
+        url: "goods",
+        method: "post",
+        data: {
+            title, sup, cat
+        }
+    });
+}
+
+export const addGood = (url, title, price, supplier_id, total, category_id) => {
+    return instance({
+        url: "goods/add",
+        method: "post",
+        data: {
+            url, title, price, supplier_id, total, category_id
+        }
+    });
+}
+
+export const deleteGood = (id) => {
+    return instance({
+        url: "goods/delete",
+        method: "post",
+        data: {
+            id
+        }
+    });
+}
+
+export const updateGood = (params) => {
+    return instance({
+        url: "goods/update",
+        method: "post",
+        data: {
+            params
+        }
+    });
+}
+
+export const addCat = (label, parent) => {
+    console.log('label', label)
+    console.log('parent', parent)
+    return instance({
+        url: "goods/addCat",
+        method: "post",
+        data: {
+            label, parent
+        }
+    });
+}
+
+export const deleteCat = (ids) => {
+    return instance({
+        url: "goods/deleteCat",
+        method: "post",
+        data: {
+            ids
+        }
+    });
+}
+
+
+export const getCat = () => {
+    return instance({
+        url: "goods/getCat",
+        method: "get",
+    });
+}
+
+
+export const getSupplier = (name?, phone?, linkman?, address?, type?) => {
+    return instance({
+        url: "supplier/",
+        method: "post",
+        data: {
+            name, phone, linkman, address, type
+        }
+    });
+}
+
+export const addSupplier = (name, address, phone, linkman, type) => {
+    return instance({
+        url: "supplier/add",
+        method: "post",
+        data: {
+            name, address, phone, linkman, type
+        }
+    });
+}
+
+export const updateSupplier = (id, name, address, phone, linkman, type) => {
+    return instance({
+        url: "supplier/update",
+        method: "post",
+        data: {
+            id, name, address, phone, linkman, type
+        }
+    });
+}
+
+export const deleteSupplier = (id) => {
+    return instance({
+        url: "supplier/delete",
+        method: "post",
+        data: {
+            id
+        }
+    });
+}
+
+export const getRule = () => {
+    return instance({
+        url: "rule/",
+        method: "get"
+    });
+}
+
+export const addRule = (name, limit, dec, type) => {
+    return instance({
+        url: "rule/add",
+        method: "post",
+        data: {
+            name, limit, dec, type
+        }
+    });
+}
+
+export const addAct = (name, creator, rule, startTime, endTime, list) => {
+    return instance({
+        url: "activity/add",
+        method: "post",
+        data: {
+            name, creator, rule, startTime, endTime, list
+        }
+    });
+}
+export const getAct = (name?) => {
+    return instance({
+        url: "activity/",
+        method: "post",
+        data: {
+            name
+        }
+    });
+}
+
+export const deleteActivity = (id?) => {
+    return instance({
+        url: "activity/delete",
+        method: "post",
+        data: {
+            id
+        }
+    });
+}
+
+export const getOrder = (date?, type_id?, sup_id?, amount?, activity_id?, vip_id?, current?, pageSize?) => {
+    console.log(date, type_id, sup_id, amount, activity_id, vip_id, current, pageSize)
+    return instance({
+        url: "order",
+        method: "post",
+        data: {
+            amount, activity_id, sup_id, date, type_id, vip_id, current, pageSize
+        }
+    });
+}
+
+export const deleteOrder = (id) => {
+    return instance({
+        url: "order/delete",
+        method: "post",
+        data: {
+            id
+        }
+    });
+}
+
+export const addOrder = (params) => {
+    return instance({
+        url: "order/add",
+        method: "post",
+        data: {
+            params
+        }
+    });
+}
+
+export const changePassword = (name, newPassword) => {
+    return instance({
+        url: "users/changePassword",
+        method: "post",
+        data: {
+            name, newPassword
+        }
+    });
+}
+export const getDash = () => {
+    return instance({
+        url: "dash/getDashboard",
+        method: "get",
+    });
+}
+export const getRecord = () => {
+    return instance({
+        url: "dash/record",
+        method: "get",
+    });
+}
+export const vipSta = () => {
+    return instance({
+        url: "vip/sta",
+        method: "get",
     });
 }
